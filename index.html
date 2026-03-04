@@ -61,7 +61,7 @@
             border-radius: 12px;
             border: 1px solid #f1c0e8;
             outline: none;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-size: 15px;
             transition: 0.3s;
         }
@@ -82,6 +82,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: 0.3s;
+            margin-bottom: 10px;
         }
 
         button:hover {
@@ -90,14 +91,15 @@
         }
 
         .resultado {
-            margin-top: 25px;
-            font-size: 20px;
+            margin-top: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: #d63384;
+            line-height: 1.6;
         }
 
         .info {
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 13px;
             color: #888;
         }
@@ -109,33 +111,74 @@
     <div class="card">
         <div class="logo">Lau Cosmetics</div>
         <h2>Calculadora de Precio de Venta</h2>
-        
 
         <label>Costo unitario</label>
         <input type="number" id="costo" placeholder="Ej: 25000" step="0.01">
 
+        <label>Margen (%)</label>
+        <input type="number" id="margen" placeholder="Ej: 40" step="0.01">
+
         <button onclick="calcular()">Calcular Precio</button>
 
+        <label>Descuento (%)</label>
+        <input type="number" id="descuento" placeholder="Ej: 10" step="0.01">
+
+        <button onclick="aplicarDescuento()">Aplicar Descuento</button>
+
         <div class="resultado" id="resultado"></div>
-        <div class="info">Margen aplicado: 40%</div>
         <div class="info">Te amo❤️</div>
     </div>
 
     <script>
+        let precioGlobal = 0;
+
         function calcular() {
             const costo = parseFloat(document.getElementById("costo").value);
+            const margenInput = parseFloat(document.getElementById("margen").value);
 
             if (isNaN(costo) || costo <= 0) {
-                document.getElementById("resultado").innerText = "Ingresa un valor válido.";
+                document.getElementById("resultado").innerText = "Ingresa un costo válido.";
                 return;
             }
 
-            const precioVenta = costo / (1 - 0.40);
+            if (isNaN(margenInput) || margenInput <= 0 || margenInput >= 100) {
+                document.getElementById("resultado").innerText = "Ingresa un margen válido (0 - 99).";
+                return;
+            }
 
-            document.getElementById("resultado").innerText =
-                "Precio sugerido: $" + precioVenta.toLocaleString("es-CO", {
+            const margen = margenInput / 100;
+            precioGlobal = costo / (1 - margen);
+
+            document.getElementById("resultado").innerHTML =
+                "Precio sugerido: $" + precioGlobal.toLocaleString("es-CO", {
                     minimumFractionDigits: 0
                 });
+        }
+
+        function aplicarDescuento() {
+            const descuentoInput = parseFloat(document.getElementById("descuento").value);
+
+            if (precioGlobal === 0) {
+                document.getElementById("resultado").innerText =
+                    "Primero debes calcular el precio.";
+                return;
+            }
+
+            if (isNaN(descuentoInput) || descuentoInput < 0 || descuentoInput >= 100) {
+                document.getElementById("resultado").innerText =
+                    "Ingresa un descuento válido (0 - 99).";
+                return;
+            }
+
+            const descuento = descuentoInput / 100;
+            const valorDescuento = precioGlobal * descuento;
+            const precioConDescuento = precioGlobal - valorDescuento;
+
+            document.getElementById("resultado").innerHTML =
+                "Precio sugerido: $" + precioGlobal.toLocaleString("es-CO", { minimumFractionDigits: 0 }) + "<br>" +
+                "Descuento aplicado: " + descuentoInput + "%<br>" +
+                "Valor descontado: $" + valorDescuento.toLocaleString("es-CO", { minimumFractionDigits: 0 }) + "<br>" +
+                "<strong>Precio con descuento: $" + precioConDescuento.toLocaleString("es-CO", { minimumFractionDigits: 0 }) + "</strong>";
         }
     </script>
 
