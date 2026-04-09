@@ -2,184 +2,258 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Beauty</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #fbc2eb, #fcd6f6, #ffe3f3);
-        }
-
-        .card {
-            background: white;
-            padding: 40px 35px;
-            width: 380px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 600;
-            color: #d63384;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        h2 {
-            font-weight: 400;
-            margin-bottom: 25px;
-            color: #444;
-        }
-
-        label {
-            font-size: 14px;
-            color: #777;
-            display: block;
-            text-align: left;
-            margin-bottom: 6px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #f1c0e8;
-            outline: none;
-            margin-bottom: 15px;
-            font-size: 15px;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: #d63384;
-            box-shadow: 0 0 0 3px rgba(214, 51, 132, 0.1);
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 30px;
-            background: linear-gradient(90deg, #ff6fa5, #d63384);
-            color: white;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-bottom: 10px;
-        }
-
-        button:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-        }
-
-        .resultado {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #d63384;
-            line-height: 1.6;
-        }
-
-        .info {
-            margin-top: 8px;
-            font-size: 13px;
-            color: #888;
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <title>LauCosmetics</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
 
-    <div class="card">
-        <div class="logo">Lau Cosmetics</div>
-        <h2>Calculadora de Precio de Venta</h2>
+    <div class="container">
 
-        <label>Costo unitario</label>
-        <input type="number" id="costo" placeholder="Ej: 25000" step="0.01">
+        <h1>LauCosmetics</h1>
 
-        <label>Margen (%)</label>
-        <input type="number" id="margen" placeholder="Ej: 40" step="0.01">
+        <!-- FORM PRODUCTO -->
+        <h2>Agregar Producto</h2>
 
-        <button onclick="calcular()">Calcular Precio</button>
+        <form id="form">
+            <input type="text" id="producto" placeholder="Nombre del producto" required />
+            <input type="number" id="cantidad" placeholder="Cantidad" required />
+            <input type="number" id="costo" placeholder="Costo" required />
+            <input type="number" step="0.01" id="margen" placeholder="Margen (20 = 20%)" required />
 
-        <label>Descuento (%)</label>
-        <input type="number" id="descuento" placeholder="Ej: 10" step="0.01">
+            <button type="submit">Guardar Producto</button>
+        </form>
 
-        <button onclick="aplicarDescuento()">Aplicar Descuento</button>
+        <!-- FORM VENTA -->
+        <div class="venta-section">
+            <h2>Registrar Venta</h2>
 
-        <div class="resultado" id="resultado"></div>
-        <div class="info">Te amo❤️</div>
+            <form id="ventaForm">
+                <select id="ventaProducto" required>
+                    <option value="">Seleccione un producto</option>
+                </select>
+
+                <input type="number" id="cantidadVendida" placeholder="Cantidad a vender" required />
+
+                <button type="submit">Vender</button>
+            </form>
+        </div>
+
+        <!-- FORM STOCK -->
+        <div class="venta-section">
+            <h2>Agregar Stock</h2>
+
+            <form id="stockForm">
+                <select id="stockProducto" required>
+                    <option value="">Seleccione un producto</option>
+                </select>
+
+                <input type="number" id="cantidadAgregar" placeholder="Cantidad a agregar" required />
+
+                <button type="submit">Agregar Stock</button>
+            </form>
+        </div>
+
+        <!-- FORM ELIMINAR VENTA -->
+        <div class="venta-section">
+            <h2>Revertir Venta</h2>
+
+            <form id="deleteVentaForm">
+                <select id="deleteProducto" required>
+                    <option value="">Seleccione un producto</option>
+                </select>
+
+                <input type="number" id="cantidadEliminar" placeholder="Cantidad a revertir" required />
+
+                <button type="submit">Revertir Venta</button>
+            </form>
+        </div>
+
+        <!-- TABLA -->
+        <h2>Lista de Productos</h2>
+
+        <table id="tabla">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Disponibles</th>
+                    <th>Costo</th>
+                    <th>Margen</th>
+                    <th>Precio Venta</th>
+                    <th>Total Invertido</th>
+                    <th>Total Ventas</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
     </div>
 
     <script>
-        let precioGlobal = 0;
+        const API = "http://localhost:3001/productos";
+        const API_VENTA = "http://localhost:3001/ventas";
+        const API_STOCK = "http://localhost:3001/stock";
+        const API_REVERTIR = "http://localhost:3001/ventas/revertir";
 
-        function calcular() {
-            const costo = parseFloat(document.getElementById("costo").value);
-            const margenInput = parseFloat(document.getElementById("margen").value);
+        const form = document.getElementById("form");
+        const ventaForm = document.getElementById("ventaForm");
+        const stockForm = document.getElementById("stockForm");
+        const deleteVentaForm = document.getElementById("deleteVentaForm");
 
-            if (isNaN(costo) || costo <= 0) {
-                document.getElementById("resultado").innerText = "Ingresa un costo válido.";
-                return;
-            }
+        const tbody = document.querySelector("#tabla tbody");
 
-            if (isNaN(margenInput) || margenInput <= 0 || margenInput >= 100) {
-                document.getElementById("resultado").innerText = "Ingresa un margen válido (0 - 99).";
-                return;
-            }
-
-            const margen = margenInput / 100;
-            precioGlobal = costo / (1 - margen);
-
-            document.getElementById("resultado").innerHTML =
-                "Precio sugerido: $" + precioGlobal.toLocaleString("es-CO", {
-                    minimumFractionDigits: 0
-                });
+        function formatoCOP(valor) {
+            return "$" + valor.toLocaleString("es-CO");
         }
 
-        function aplicarDescuento() {
-            const descuentoInput = parseFloat(document.getElementById("descuento").value);
+        // 🔄 Cargar productos
+        async function cargarProductos() {
+            const res = await fetch(API);
+            const data = await res.json();
 
-            if (precioGlobal === 0) {
-                document.getElementById("resultado").innerText =
-                    "Primero debes calcular el precio.";
-                return;
-            }
+            tbody.innerHTML = "";
 
-            if (isNaN(descuentoInput) || descuentoInput < 0 || descuentoInput >= 100) {
-                document.getElementById("resultado").innerText =
-                    "Ingresa un descuento válido (0 - 99).";
-                return;
-            }
+            const selectVenta = document.getElementById("ventaProducto");
+            const selectStock = document.getElementById("stockProducto");
+            const selectDelete = document.getElementById("deleteProducto");
 
-            const descuento = descuentoInput / 100;
-            const valorDescuento = precioGlobal * descuento;
-            const precioConDescuento = precioGlobal - valorDescuento;
+            selectVenta.innerHTML = `<option value="">Seleccione un producto</option>`;
+            selectStock.innerHTML = `<option value="">Seleccione un producto</option>`;
+            selectDelete.innerHTML = `<option value="">Seleccione un producto</option>`;
 
-            document.getElementById("resultado").innerHTML =
-                "Precio sugerido: $" + precioGlobal.toLocaleString("es-CO", { minimumFractionDigits: 0 }) + "<br>" +
-                "Descuento aplicado: " + descuentoInput + "%<br>" +
-                "Valor descontado: $" + valorDescuento.toLocaleString("es-CO", { minimumFractionDigits: 0 }) + "<br>" +
-                "<strong>Precio con descuento: $" + precioConDescuento.toLocaleString("es-CO", { minimumFractionDigits: 0 }) + "</strong>";
+            data.forEach(p => {
+
+                // 📊 Tabla
+                const row = `
+          <tr>
+            <td>${p.producto}</td>
+            <td>${p.cantidad}</td>
+            <td>${p.disponibles}</td>
+            <td>${formatoCOP(p.costo)}</td>
+            <td>${p.margen}%</td>
+            <td>${formatoCOP(p.precioVenta)}</td>
+            <td>${formatoCOP(p.totalinvertido)}</td>
+            <td>${formatoCOP(p.totalVentas)}</td>
+          </tr>
+        `;
+                tbody.innerHTML += row;
+
+                const baseOption = document.createElement("option");
+                baseOption.value = p.id;
+                const vendidos = p.cantidad - p.disponibles;
+                baseOption.textContent = `${p.producto} (Stock: ${p.disponibles})`;
+
+                const optionVenta = baseOption.cloneNode(true);
+                if (p.disponibles === 0) {
+                    optionVenta.disabled = true;
+                    optionVenta.textContent += " - SIN STOCK";
+                }
+
+                const optionStock = baseOption.cloneNode(true);
+
+                const optionDelete = baseOption.cloneNode(true);
+                optionDelete.textContent = `${p.producto} (Vendidos: ${vendidos})`;
+                if (vendidos === 0) {
+                    optionDelete.disabled = true;
+                    optionDelete.textContent += " - SIN VENTAS";
+                }
+                selectVenta.appendChild(optionVenta);
+                selectStock.appendChild(optionStock);
+                selectDelete.appendChild(optionDelete);
+            });
         }
+
+        // ➕ Crear producto
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const data = {
+                producto: producto.value,
+                cantidad: Number(cantidad.value),
+                costo: Number(costo.value),
+                margen: Number(margen.value)
+            };
+
+            await fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            alert("✅ Producto creado");
+            form.reset();
+            cargarProductos();
+        });
+
+        // 💰 Venta
+        ventaForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const data = {
+                id: ventaProducto.value,
+                cantidadVendida: Number(cantidadVendida.value)
+            };
+
+            const res = await fetch(API_VENTA, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            alert(result.mensaje || result.error);
+
+            ventaForm.reset();
+            cargarProductos();
+        });
+
+        // ➕ Stock
+        stockForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const data = {
+                id: stockProducto.value,
+                cantidad: Number(cantidadAgregar.value)
+            };
+
+            const res = await fetch(API_STOCK, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            alert(result.mensaje || result.error);
+
+            stockForm.reset();
+            cargarProductos();
+        });
+
+        // ❌ Revertir venta
+        deleteVentaForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const data = {
+                id: deleteProducto.value,
+                cantidad: Number(cantidadEliminar.value)
+            };
+
+            const res = await fetch(API_REVERTIR, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            alert(result.mensaje || result.error);
+
+            deleteVentaForm.reset();
+            cargarProductos();
+        });
+
+        cargarProductos();
     </script>
 
 </body>

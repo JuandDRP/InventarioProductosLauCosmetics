@@ -1,0 +1,130 @@
+ body {
+     font-family: 'Segoe UI', sans-serif;
+     background: linear-gradient(to right, #fce4ec, #f8bbd0);
+     margin: 0;
+     padding: 20px;
+ }
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+
+}
+
+/* Hover */
+select:hover {
+  border-color: #888;
+}
+
+/* Focus */
+select:focus {
+  outline: none;
+  border-color: #ff4d6d;
+  box-shadow: 0 0 5px rgba(255, 77, 109, 0.5);
+}
+
+/* Opciones */
+select option {
+  padding: 10px;
+}
+
+/* Disabled option (sin stock) */
+select option:disabled {
+  color: #aaa;
+}
+ h1 {
+     text-align: center;
+     color: #880e4f;
+ }
+
+ h2 {
+     color: #ad1457;
+     margin-top: 20px;
+ }
+
+ .container {
+     max-width: 1000px;
+     margin: auto;
+     background: #ffffff;
+     padding: 25px;
+     border-radius: 15px;
+     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+ }
+
+ form {
+     display: grid;
+     grid-template-columns: repeat(2, 1fr);
+     gap: 15px;
+     margin-bottom: 20px;
+ }
+
+ input {
+     padding: 12px;
+     border-radius: 10px;
+     border: 1px solid #ddd;
+     outline: none;
+ }
+
+ input:focus {
+     border-color: #ec407a;
+     box-shadow: 0 0 5px rgba(236, 64, 122, 0.5);
+ }
+
+ button {
+     grid-column: span 2;
+     padding: 12px;
+     background: #ec407a;
+     color: white;
+     border: none;
+     border-radius: 10px;
+     cursor: pointer;
+     font-size: 16px;
+ }
+
+ button:hover {
+     background: #d81b60;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     border-radius: 10px;
+     overflow: hidden;
+     margin-top: 10px;
+ }
+
+ thead {
+     background: #880e4f;
+     color: white;
+ }
+
+ th,
+ td {
+     padding: 12px;
+     text-align: center;
+ }
+
+ tbody tr:hover {
+     background: #fce4ec;
+ }
+
+ .badge {
+     background: #f8bbd0;
+     padding: 5px 10px;
+     border-radius: 20px;
+     color: #880e4f;
+     font-weight: bold;
+ }
+
+ .venta-section {
+     margin-top: 30px;
+     padding: 15px;
+     background: #fff0f5;
+     border-radius: 10px;
+ }
