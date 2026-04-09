@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const conectarDB = require('./config/db');
-const {nanoid} = require('nanoid');
+const { nanoid } = require('nanoid');
 
 require('dotenv').config();
 
@@ -19,8 +19,10 @@ conectarDB().then((database) => {
 
     productosCol = db.collection('productos');
 
-    app.listen(3001, () => {
-        console.log('🚀 Servidor escuchando en http://localhost:3001');
+    const PORT = process.env.PORT || 3001;
+
+    app.listen(PORT, () => {
+        console.log(`🚀 Servidor en puerto ${PORT}`);
     });
 });
 
@@ -50,7 +52,7 @@ app.post('/productos', async (req, res) => {
         }
 
         const precioVenta = Number((costo / (1 - margen / 100)).toFixed(0));
-        const totalinvertido=Number((cantidad * costo).toFixed(0));
+        const totalinvertido = Number((cantidad * costo).toFixed(0));
 
         const nuevoProducto = {
             id: nanoid(6),
@@ -173,7 +175,7 @@ app.post("/stock", async (req, res) => {
         const inversionNueva = cantidad * producto.costo;
         const nuevoTotalInvertido = producto.totalinvertido + inversionNueva;
 
-   
+
         await productosCol.updateOne(
             { id },
             {
