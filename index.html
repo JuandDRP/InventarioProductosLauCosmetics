@@ -13,7 +13,6 @@
 
         <h1>LauCosmetics</h1>
 
-        <!-- FORM PRODUCTO -->
         <h2>Agregar Producto</h2>
 
         <form id="form">
@@ -21,57 +20,47 @@
             <input type="number" id="cantidad" placeholder="Cantidad" required />
             <input type="number" id="costo" placeholder="Costo" required />
             <input type="number" step="0.01" id="margen" placeholder="Margen (20 = 20%)" required />
-
             <button type="submit">Guardar Producto</button>
         </form>
 
-        <!-- FORM VENTA -->
         <div class="venta-section">
             <h2>Registrar Venta</h2>
-
+            <input type="search" id="buscarVenta" placeholder="Buscar producto..." />
             <form id="ventaForm">
                 <select id="ventaProducto" required>
                     <option value="">Seleccione un producto</option>
                 </select>
-
                 <input type="number" id="cantidadVendida" placeholder="Cantidad a vender" required />
-
                 <button type="submit">Vender</button>
             </form>
         </div>
 
-        <!-- FORM STOCK -->
         <div class="venta-section">
             <h2>Agregar Stock</h2>
-
+            <input type="search" id="buscarStock" placeholder="Buscar producto..." />
             <form id="stockForm">
                 <select id="stockProducto" required>
                     <option value="">Seleccione un producto</option>
                 </select>
-
                 <input type="number" id="cantidadAgregar" placeholder="Cantidad a agregar" required />
-
                 <button type="submit">Agregar Stock</button>
             </form>
         </div>
 
-        <!-- FORM ELIMINAR VENTA -->
         <div class="venta-section">
             <h2>Revertir Venta</h2>
-
+            <input type="search" id="buscarDelete" placeholder="Buscar producto..." />
             <form id="deleteVentaForm">
                 <select id="deleteProducto" required>
                     <option value="">Seleccione un producto</option>
                 </select>
-
                 <input type="number" id="cantidadEliminar" placeholder="Cantidad a revertir" required />
-
                 <button type="submit">Revertir Venta</button>
             </form>
         </div>
 
-        <!-- TABLA -->
         <h2>Lista de Productos</h2>
+        <input type="text" id="buscarTabla" placeholder="Buscar en la tabla..." />
 
         <table id="tabla">
             <thead>
@@ -97,6 +86,8 @@
         const API_STOCK = "https://laucosmetics.onrender.com/stock";
         const API_REVERTIR = "https://laucosmetics.onrender.com/ventas/revertir";
 
+        let productosGlobal = [];
+
         const form = document.getElementById("form");
         const ventaForm = document.getElementById("ventaForm");
         const stockForm = document.getElementById("stockForm");
@@ -108,13 +99,7 @@
             return "$" + valor.toLocaleString("es-CO");
         }
 
-        // 🔄 Cargar productos
-        async function cargarProductos() {
-            const res = await fetch(API);
-            const data = await res.json();
-
-            tbody.innerHTML = "";
-
+        function renderSelects(productos) {
             const selectVenta = document.getElementById("ventaProducto");
             const selectStock = document.getElementById("stockProducto");
             const selectDelete = document.getElementById("deleteProducto");
@@ -123,49 +108,102 @@
             selectStock.innerHTML = `<option value="">Seleccione un producto</option>`;
             selectDelete.innerHTML = `<option value="">Seleccione un producto</option>`;
 
-            data.forEach(p => {
-
-                // 📊 Tabla
-                const row = `
-          <tr>
-            <td>${p.producto}</td>
-            <td>${p.cantidad}</td>
-            <td>${p.disponibles}</td>
-            <td>${formatoCOP(p.costo)}</td>
-            <td>${p.margen}%</td>
-            <td>${formatoCOP(p.precioVenta)}</td>
-            <td>${formatoCOP(p.totalinvertido)}</td>
-            <td>${formatoCOP(p.totalVentas)}</td>
-          </tr>
-        `;
-                tbody.innerHTML += row;
-
-                const baseOption = document.createElement("option");
-                baseOption.value = p.id;
+            productos.forEach(p => {
                 const vendidos = p.cantidad - p.disponibles;
-                baseOption.textContent = `${p.producto} (Stock: ${p.disponibles})`;
 
-                const optionVenta = baseOption.cloneNode(true);
+                const optionVenta = document.createElement("option");
+                optionVenta.value = p.id;
+                optionVenta.textContent = `${p.producto} (Stock: ${p.disponibles})`;
                 if (p.disponibles === 0) {
                     optionVenta.disabled = true;
                     optionVenta.textContent += " - SIN STOCK";
                 }
 
-                const optionStock = baseOption.cloneNode(true);
+                const optionStock = document.createElement("option");
+                optionStock.value = p.id;
+                optionStock.textContent = `${p.producto} (Stock: ${p.disponibles})`;
 
-                const optionDelete = baseOption.cloneNode(true);
+                const optionDelete = document.createElement("option");
+                optionDelete.value = p.id;
                 optionDelete.textContent = `${p.producto} (Vendidos: ${vendidos})`;
                 if (vendidos === 0) {
                     optionDelete.disabled = true;
                     optionDelete.textContent += " - SIN VENTAS";
                 }
+
                 selectVenta.appendChild(optionVenta);
                 selectStock.appendChild(optionStock);
                 selectDelete.appendChild(optionDelete);
             });
         }
 
-        // ➕ Crear producto
+        function renderTabla(productos) {
+            tbody.innerHTML = "";
+            productos.forEach(p => {
+                const row = `
+                <tr>
+                    <td>${p.producto}</td>
+                    <td>${p.cantidad}</td>
+                    <td>${p.disponibles}</td>
+                    <td>${formatoCOP(p.costo)}</td>
+                    <td>${p.margen}%</td>
+                    <td>${formatoCOP(p.precioVenta)}</td>
+                    <td>${formatoCOP(p.totalinvertido)}</td>
+                    <td>${formatoCOP(p.totalVentas)}</td>
+                </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function cargarProductos() {
+            const res = await fetch(API);
+            const data = await res.json();
+            productosGlobal = data;
+            renderTabla(data);
+            renderSelects(data);
+        }
+
+        function activarBuscadores() {
+
+            function configurarBuscador(inputId) {
+                const input = document.getElementById(inputId);
+
+                const ejecutarFiltro = () => {
+                    const filtro = input.value.toLowerCase();
+                    renderSelects(
+                        productosGlobal.filter(p =>
+                            p.producto.toLowerCase().includes(filtro)
+                        )
+                    );
+                };
+
+                input.addEventListener("input", ejecutarFiltro);
+                input.addEventListener("keyup", ejecutarFiltro);
+                input.addEventListener("search", ejecutarFiltro);
+
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        ejecutarFiltro();
+                    }
+                });
+            }
+
+            configurarBuscador("buscarVenta");
+            configurarBuscador("buscarStock");
+            configurarBuscador("buscarDelete");
+
+            document.getElementById("buscarTabla").addEventListener("input", e => {
+                const filtro = e.target.value.toLowerCase();
+                renderTabla(
+                    productosGlobal.filter(p =>
+                        p.producto.toLowerCase().includes(filtro)
+                    )
+                );
+            });
+        }
+
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -182,12 +220,10 @@
                 body: JSON.stringify(data)
             });
 
-            alert("✅ Producto creado");
             form.reset();
             cargarProductos();
         });
 
-        // 💰 Venta
         ventaForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -196,20 +232,16 @@
                 cantidadVendida: Number(cantidadVendida.value)
             };
 
-            const res = await fetch(API_VENTA, {
+            await fetch(API_VENTA, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
 
-            const result = await res.json();
-            alert(result.mensaje || result.error);
-
             ventaForm.reset();
             cargarProductos();
         });
 
-        // ➕ Stock
         stockForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -218,20 +250,16 @@
                 cantidad: Number(cantidadAgregar.value)
             };
 
-            const res = await fetch(API_STOCK, {
+            await fetch(API_STOCK, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
 
-            const result = await res.json();
-            alert(result.mensaje || result.error);
-
             stockForm.reset();
             cargarProductos();
         });
 
-        // ❌ Revertir venta
         deleteVentaForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -240,20 +268,18 @@
                 cantidad: Number(cantidadEliminar.value)
             };
 
-            const res = await fetch(API_REVERTIR, {
+            await fetch(API_REVERTIR, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
-
-            const result = await res.json();
-            alert(result.mensaje || result.error);
 
             deleteVentaForm.reset();
             cargarProductos();
         });
 
         cargarProductos();
+        activarBuscadores();
     </script>
 
 </body>
