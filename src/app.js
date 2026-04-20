@@ -150,7 +150,9 @@ app.post("/ventas", async (req, res) => {
             }
         );
 
-        res.json({ mensaje: "✅ Venta realizada correctamente" });
+        const productoActualizado = await productosCol.findOne({ id });
+
+        res.json(productoActualizado);
 
     } catch (error) {
         console.error("❌ Error en venta:", error);
@@ -189,11 +191,9 @@ app.post("/stock", async (req, res) => {
             }
         );
 
-        res.json({
-            mensaje: "✅ Stock actualizado correctamente",
-            inversionAgregada: inversionNueva,
-            totalinvertido: nuevoTotalInvertido
-        });
+        const productoActualizado = await productosCol.findOne({ id });
+
+        res.json(productoActualizado);
 
     } catch (error) {
         console.error("❌ Error en stock:", error);
